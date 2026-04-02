@@ -457,17 +457,20 @@
     var info = data.info;
     var html = '';
 
-    // How to Use
-    html += renderHowToUse(info.howToUse);
+    // How to Use This Guide
+    if (info.howToUse) html += renderHowToUse(info.howToUse);
 
-    // Understanding Calories
-    html += renderUnderstandingCalories(info.understandingCalories);
+    // Adrenal Cocktail Info
+    if (info.adrenalCocktail) html += renderAdrenalCocktail(info.adrenalCocktail);
 
-    // Why Protein + Fiber
-    html += renderWhyProteinFiber(info.whyProteinFiber);
+    // Adrenal Cocktail Recipe
+    if (info.adrenalCocktailRecipe) html += renderAdrenalRecipe(info.adrenalCocktailRecipe);
 
-    // Adrenal Cocktail
-    html += renderAdrenalCocktail(info.adrenalCocktail);
+    // 30-Day Supply Estimates
+    if (info.supplyEstimates) html += renderSupplyEstimates(info.supplyEstimates);
+
+    // What's Next
+    if (info.whatsNext) html += renderWhatsNext(info.whatsNext);
 
     els.infoContent.innerHTML = html;
   }
@@ -478,11 +481,10 @@
     html += '<p>' + escapeHtml(d.intro) + '</p>';
 
     if (d.startingInfo) {
-      html += '<h3 style="font-family:var(--font-serif);font-size:16px;font-weight:600;margin:16px 0 6px;">Getting Started</h3>';
-      html += '<p>' + escapeHtml(d.startingInfo) + '</p>';
+      html += '<h3 style="font-family:var(--font-serif);font-size:16px;font-weight:600;margin:16px 0 6px;">' + escapeHtml(d.startingInfo) + '</h3>';
+      if (d.startingDescription) html += '<p>' + escapeHtml(d.startingDescription) + '</p>';
     }
 
-    // Phase blocks
     if (d.phases) {
       d.phases.forEach(function (phase, idx) {
         var blockClass = 'info-phase-block' + (idx === 1 ? ' luteal' : '');
@@ -490,75 +492,17 @@
         html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;">' + escapeHtml(phase.label) + '</div>';
         html += '<h3>' + escapeHtml(phase.title) + '</h3>';
         html += '<p>' + escapeHtml(phase.description) + '</p>';
-        html += '<div style="font-size:12px;font-weight:600;color:var(--terracotta);margin-top:8px;">' + escapeHtml(phase.mealsTag) + '</div>';
+        if (phase.meta) {
+          html += '<div style="font-size:12px;font-weight:600;color:var(--terracotta);margin-top:8px;">' + escapeHtml(phase.meta) + '</div>';
+        }
         html += '</div>';
       });
     }
 
-    // Callout
     if (d.callout) {
       html += '<div class="info-callout">';
       html += '<p>' + escapeHtml(d.callout) + '</p>';
       html += '</div>';
-    }
-
-    html += '</div>';
-    return html;
-  }
-
-  function renderUnderstandingCalories(d) {
-    var html = '<div class="info-section">';
-    html += '<h2>' + escapeHtml(d.title) + '</h2>';
-    html += '<p>' + escapeHtml(d.intro) + '</p>';
-
-    if (d.sections) {
-      d.sections.forEach(function (s) {
-        html += '<h3 style="font-family:var(--font-serif);font-size:16px;font-weight:600;margin:16px 0 6px;">' + escapeHtml(s.heading) + '</h3>';
-        html += '<p>' + escapeHtml(s.text) + '</p>';
-      });
-    }
-
-    if (d.callout) {
-      html += '<div class="info-callout">';
-      html += '<p>' + escapeHtml(d.callout) + '</p>';
-      html += '</div>';
-    }
-
-    if (d.bodyText) {
-      html += '<p style="margin-top:12px;">' + escapeHtml(d.bodyText) + '</p>';
-    }
-
-    html += '</div>';
-    return html;
-  }
-
-  function renderWhyProteinFiber(d) {
-    var html = '<div class="info-section">';
-    html += '<h2>' + escapeHtml(d.title) + '</h2>';
-    html += '<p>' + escapeHtml(d.intro) + '</p>';
-
-    // Protein section
-    if (d.proteinBadge) {
-      html += '<div style="font-size:12px;font-weight:700;color:var(--terracotta);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;">' + escapeHtml(d.proteinBadge) + '</div>';
-    }
-    if (d.proteinText) {
-      d.proteinText.forEach(function (p) {
-        html += '<p style="margin-bottom:8px;">' + escapeHtml(p) + '</p>';
-      });
-    }
-
-    // Fiber section
-    if (d.fiberBadge) {
-      html += '<div style="font-size:12px;font-weight:700;color:var(--sage);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;">' + escapeHtml(d.fiberBadge) + '</div>';
-    }
-    if (d.fiberIntro) {
-      html += '<p style="margin-bottom:8px;">' + escapeHtml(d.fiberIntro) + '</p>';
-    }
-    if (d.fiberReasons) {
-      d.fiberReasons.forEach(function (r) {
-        html += '<h3 style="font-family:var(--font-serif);font-size:16px;font-weight:600;margin:12px 0 4px;">' + escapeHtml(r.heading) + '</h3>';
-        html += '<p>' + escapeHtml(r.text) + '</p>';
-      });
     }
 
     html += '</div>';
@@ -566,10 +510,7 @@
   }
 
   function renderAdrenalCocktail(d) {
-    var html = '';
-
-    // Sections (What Is It, Why It Matters, When to Drink)
-    html += '<div class="info-section">';
+    var html = '<div class="info-section">';
     html += '<h2>' + escapeHtml(d.title) + '</h2>';
     html += '<p>' + escapeHtml(d.intro) + '</p>';
 
@@ -580,7 +521,6 @@
       });
     }
 
-    // Timing
     if (d.timing) {
       html += '<div style="margin-top:12px;">';
       d.timing.forEach(function (t) {
@@ -588,28 +528,83 @@
       });
       html += '</div>';
     }
-    html += '</div>';
 
-    // Recipe card
-    if (d.recipe) {
-      html += '<div class="info-recipe-card">';
-      html += '<h3>' + escapeHtml(d.recipe.title) + '</h3>';
-      if (d.recipe.label) {
-        html += '<p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;opacity:0.8;">' + escapeHtml(d.recipe.label) + '</p>';
-      }
-      if (d.recipe.ingredients) {
-        html += '<ul style="list-style:none;padding:0;margin:8px 0;">';
-        d.recipe.ingredients.forEach(function (ing) {
-          html += '<li style="padding:3px 0;font-size:14px;">\u2022 ' + escapeHtml(ing) + '</li>';
-        });
-        html += '</ul>';
-      }
-      if (d.recipe.macrosNote) {
-        html += '<p style="font-size:12px;margin-top:8px;opacity:0.85;">' + escapeHtml(d.recipe.macrosNote) + '</p>';
-      }
+    html += '</div>';
+    return html;
+  }
+
+  function renderAdrenalRecipe(d) {
+    var html = '<div class="info-recipe-card">';
+    if (d.recipeSubtitle) {
+      html += '<p style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;opacity:0.7;">' + escapeHtml(d.recipeSubtitle) + '</p>';
+    }
+    html += '<h2 style="margin-bottom:12px;">' + escapeHtml(d.recipeTitle || d.title) + '</h2>';
+
+    if (d.ingredients) {
+      html += '<ul style="list-style:none;padding:0;margin:8px 0;">';
+      d.ingredients.forEach(function (ing) {
+        html += '<li style="padding:4px 0;font-size:14px;border-bottom:1px solid rgba(122,139,111,0.15);">' + escapeHtml(ing) + '</li>';
+      });
+      html += '</ul>';
+    }
+
+    if (d.totals) {
+      html += '<p style="font-size:13px;font-weight:600;margin-top:12px;text-align:center;">' + escapeHtml(d.totals) + '</p>';
+    }
+    if (d.note) {
+      html += '<p style="font-size:11px;margin-top:4px;text-align:center;opacity:0.7;">' + escapeHtml(d.note) + '</p>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function renderSupplyEstimates(d) {
+    var html = '<div class="info-section">';
+    html += '<h2>' + escapeHtml(d.title) + '</h2>';
+    html += '<p style="margin-bottom:12px;">' + escapeHtml(d.subtitle) + '</p>';
+
+    if (d.items) {
+      d.items.forEach(function (item) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);">';
+        html += '<div style="flex:1;min-width:0;">';
+        html += '<div style="font-size:14px;font-weight:600;color:var(--text-body);">' + escapeHtml(item.item) + '</div>';
+        html += '<div style="font-size:12px;color:var(--text-muted);">' + escapeHtml(item.weeklyUse) + '/wk \u00b7 ' + escapeHtml(item.thirtyDayTotal) + ' total</div>';
+        html += '</div>';
+        html += '<div style="font-size:12px;color:var(--terracotta);font-weight:600;text-align:right;flex-shrink:0;margin-left:12px;">' + escapeHtml(item.buy) + '</div>';
+        html += '</div>';
+      });
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function renderWhatsNext(d) {
+    var html = '<div class="info-section">';
+    html += '<h2>' + escapeHtml(d.title) + '</h2>';
+    html += '<p>' + escapeHtml(d.intro) + '</p>';
+
+    if (d.kicker) {
+      html += '<h3 style="font-family:var(--font-serif);font-size:16px;font-weight:600;margin:16px 0 8px;">' + escapeHtml(d.kicker) + '</h3>';
+    }
+
+    if (d.options) {
+      d.options.forEach(function (opt) {
+        html += '<div style="margin-bottom:12px;padding:12px 16px;background:rgba(160,114,92,0.04);border-left:3px solid var(--terracotta);border-radius:0 10px 10px 0;">';
+        html += '<div style="font-weight:600;font-size:14px;color:var(--text-body);margin-bottom:4px;">' + escapeHtml(opt.title) + '</div>';
+        html += '<p style="margin:0;">' + escapeHtml(opt.description) + '</p>';
+        html += '</div>';
+      });
+    }
+
+    if (d.closingNote) {
+      html += '<div class="info-callout" style="margin-top:16px;">';
+      html += '<p style="font-style:italic;">' + escapeHtml(d.closingNote) + '</p>';
       html += '</div>';
     }
 
+    html += '</div>';
     return html;
   }
 
