@@ -324,64 +324,112 @@ body {
 }
 
 /* ===== All Days Grid ===== */
-.all-days-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding-bottom: 16px;
+/* ===== Week Accordion ===== */
+.week-accordion {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  overflow: hidden;
 }
 
-.all-day-card {
-  background: var(--white);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--terracotta);
+.week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.week-header h3 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: normal;
+  color: var(--text-body);
+  margin: 0;
+}
+
+.week-header .week-phase {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--terracotta);
+  margin-top: 2px;
+}
+
+.week-header .week-phase.luteal {
+  color: var(--sage);
+}
+
+.week-header svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.week-header.open svg {
+  transform: rotate(180deg);
+}
+
+.week-days {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+.week-days.open {
+  display: block;
+}
+
+.week-day-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f5f0ea;
   cursor: pointer;
 }
 
-.all-day-card.luteal {
-  border-left-color: var(--sage);
+.week-day-row:last-child {
+  border-bottom: none;
 }
 
-.all-day-card .day-number {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-body);
-  line-height: 1.2;
-}
-
-.all-day-card .phase-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
-
-.all-day-card .meal-preview {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-/* ===== Phase Divider ===== */
-.phase-divider {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 8px 0;
-}
-
-.phase-divider span {
-  font-size: 11px;
+.week-day-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(160, 114, 92, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
+  color: var(--terracotta);
+  flex-shrink: 0;
+}
+
+.week-day-badge.luteal {
+  background: rgba(122, 139, 111, 0.1);
   color: var(--sage);
+}
+
+.week-day-name {
+  font-size: 13px;
+  color: var(--text-body);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.week-day-arrow {
+  color: var(--border);
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
 /* ===== Grocery ===== */

@@ -308,35 +308,67 @@
       + '</svg>';
   }
 
-  // ===== All Days Grid =====
+  // ===== All Days — Week Accordion =====
+  var weeks = [
+    { num: 1, label: 'Week 1', days: [1,2,3,4,5,6,7], phase: 'Days 1\u20137 \u00b7 Standard' },
+    { num: 2, label: 'Week 2', days: [8,9,10,11,12,13,14], phase: 'Days 8\u201314 \u00b7 Standard' },
+    { num: 3, label: 'Week 3', days: [15,16,17,18,19,20,21], phase: 'Days 15\u201321 \u00b7 Standard \u2192 Luteal' },
+    { num: 4, label: 'Week 4', days: [22,23,24,25,26,27,28,29,30], phase: 'Days 22\u201330 \u00b7 Luteal', luteal: true },
+  ];
+
   function renderAllDays() {
-    var html = '<div class="all-days-grid">';
+    var html = '';
 
-    data.days.forEach(function (day) {
-      // Insert phase divider before day 21
-      if (day.day === 21) {
-        html += '<div class="phase-divider"><span>Luteal Phase \u00b7 Days 21\u201330</span></div>';
-      }
+    weeks.forEach(function (week) {
+      // Determine if this week should be open (contains current day)
+      var containsCurrent = week.days.indexOf(state.currentDay) !== -1;
+      var openClass = containsCurrent ? ' open' : '';
 
-      var cardClass = 'all-day-card' + (isLuteal(day.day) ? ' luteal' : ' standard');
-      html += '<div class="' + cardClass + '" data-day="' + day.day + '">';
-      html += '<div class="day-number all-day-num">Day ' + day.day + '</div>';
-      html += '<div class="phase-label all-day-phase">' + (isLuteal(day.day) ? 'Luteal' : 'Standard') + '</div>';
-      html += '<div class="meal-preview all-day-meals"><ul>';
-      day.meals.forEach(function (meal) {
-        html += '<li style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(meal.name) + '</li>';
+      html += '<div class="week-accordion">';
+
+      // Week header
+      html += '<div class="week-header' + openClass + '" data-week="' + week.num + '">';
+      html += '<div>';
+      html += '<h3>' + week.label + '</h3>';
+      html += '<div class="week-phase' + (week.luteal ? ' luteal' : '') + '">' + week.phase + '</div>';
+      html += '</div>';
+      html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+      html += '</div>';
+
+      // Day rows
+      html += '<div class="week-days' + openClass + '">';
+      week.days.forEach(function (dayNum) {
+        var dayData = data.days[dayNum - 1];
+        if (!dayData) return;
+        var mealNames = dayData.meals.map(function (m) { return m.name; }).join(' \u00b7 ');
+        var badgeClass = 'week-day-badge' + (isLuteal(dayNum) ? ' luteal' : '');
+
+        html += '<div class="week-day-row" data-day="' + dayNum + '">';
+        html += '<div class="' + badgeClass + '">' + dayNum + '</div>';
+        html += '<div class="week-day-name">' + escapeHtml(mealNames) + '</div>';
+        html += '<div class="week-day-arrow">\u203a</div>';
+        html += '</div>';
       });
-      html += '</ul></div>';
+      html += '</div>';
+
       html += '</div>';
     });
 
-    html += '</div>';
     els.allDaysGrid.innerHTML = html;
 
-    // Bind click handlers
-    els.allDaysGrid.querySelectorAll('.all-day-card').forEach(function (card) {
-      card.addEventListener('click', function () {
-        var dayNum = parseInt(card.getAttribute('data-day'), 10);
+    // Bind accordion headers
+    els.allDaysGrid.querySelectorAll('.week-header').forEach(function (header) {
+      header.addEventListener('click', function () {
+        header.classList.toggle('open');
+        var days = header.nextElementSibling;
+        if (days) days.classList.toggle('open');
+      });
+    });
+
+    // Bind day row clicks
+    els.allDaysGrid.querySelectorAll('.week-day-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var dayNum = parseInt(row.getAttribute('data-day'), 10);
         selectDay(dayNum);
         switchView('today');
       });
