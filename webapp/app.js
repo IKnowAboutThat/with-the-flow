@@ -602,6 +602,7 @@
   function init() {
     cacheDom();
     loadState();
+    bindTabs();
 
     fetch('data.json')
       .then(function (res) { return res.json(); })
