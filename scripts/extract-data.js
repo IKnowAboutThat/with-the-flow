@@ -3,9 +3,8 @@ const path = require('path');
 const cheerio = require('cheerio');
 
 const ROOT = path.resolve(__dirname, '..');
-const MEAL_PLAN_HTML = path.join(ROOT, 'meal-plan-v2.html');
-const GROCERY_HTML = path.join(ROOT, 'grocery-lists-v2.html');
-const OUTPUT = path.join(ROOT, 'webapp', 'data.json');
+const SOURCE_HTML = '/Users/whitneyhaskin/Documents/1500 Calorie Meal Plan/plans/30-day-meal-plan-with-breakfasts/with-the-flow-breakfast-guide.html';
+const OUTPUT = path.join(ROOT, 'docs', 'data.json');
 
 // ── Helpers ──
 
@@ -15,10 +14,18 @@ function parseNumber(str) {
 }
 
 function parseMacroString(str) {
-  // e.g. "1495 cal · 146g protein · 36g fiber"
+  // e.g. "1495 cal · 134g protein · 30g fiber"
   const cal = parseNumber(str.match(/([\d.]+)\s*cal/)?.[0] || '0');
-  const protein = parseNumber(str.match(/([\d.]+)g\s*protein/)?.[0] || '0');
-  const fiber = parseNumber(str.match(/([\d.]+)g\s*fiber/)?.[0] || '0');
+  const protein = parseNumber(str.match(/([\d.]+)g\s*prot/i)?.[0] || str.match(/([\d.]+)g\s*P/)?.[0] || '0');
+  const fiber = parseNumber(str.match(/([\d.]+)g\s*fib/i)?.[0] || str.match(/([\d.]+)g\s*Fi/)?.[0] || '0');
+  return { calories: cal, protein, fiber };
+}
+
+function parseMealListMacros(str) {
+  // e.g. "560 cal · 40g P · 11g Fi"
+  const cal = parseNumber(str.match(/([\d.]+)\s*cal/)?.[0] || '0');
+  const protein = parseNumber(str.match(/([\d.]+)g\s*P\b/)?.[0] || '0');
+  const fiber = parseNumber(str.match(/([\d.]+)g\s*Fi/)?.[0] || '0');
   return { calories: cal, protein, fiber };
 }
 
@@ -31,14 +38,14 @@ function cleanText(str) {
 function extractDays($) {
   const days = [];
 
-  $('.day-overview').each((_, el) => {
+  $('.day-summary').each((_, el) => {
     const $el = $(el);
     const dayNum = parseInt($el.find('.day-number').text().replace('Day', '').trim(), 10);
-    const totalsText = cleanText($el.find('.day-totals').text());
+    const totalsText = cleanText($el.find('.day-macros').text());
     const totals = parseMacroString(totalsText);
     const phaseText = cleanText($el.find('.day-phase').text());
     const phase = phaseText.toLowerCase().includes('luteal') ? 'luteal' : 'standard';
-    const adrenalNote = cleanText($el.find('.day-adrenal-note').text());
+    const adrenalNote = cleanText($el.find('.fixed-note').text());
 
     days.push({ day: dayNum, phase, totals, meals: [], adrenalNote });
   });
@@ -52,16 +59,16 @@ function extractMeals($, days) {
   const dayMap = {};
   for (const d of days) dayMap[d.day] = d;
 
-  $('.meal-card').each((_, el) => {
+  $('.recipe-card').each((_, el) => {
     const $el = $(el);
-    const labelText = cleanText($el.find('.meal-label').text());
-    // "Day 1 · Meal 1" or "Day 1 · Snack"
-    const labelMatch = labelText.match(/Day\s+(\d+)\s*[·]\s*(.*)/);
+    const labelText = cleanText($el.find('.recipe-label').text());
+    // "DAY 1 · BREAKFAST"
+    const labelMatch = labelText.match(/DAY\s+(\d+)\s*[·]\s*(.*)/i);
     if (!labelMatch) return;
 
     const dayNum = parseInt(labelMatch[1], 10);
-    const mealLabel = labelMatch[2].trim(); // "Meal 1", "Meal 2", "Snack"
-    const mealName = cleanText($el.find('.meal-name').text());
+    const mealLabel = labelMatch[2].trim(); // "BREAKFAST", "DINNER", "TREAT", "LUNCH"
+    const mealName = cleanText($el.find('.recipe-title').text());
 
     // Macros from pills
     const pillTexts = [];
@@ -77,28 +84,41 @@ function extractMeals($, days) {
       else if (pt.includes('fiber')) macros.fiber = parseNumber(pt);
     }
 
-    // Ingredients
+    // Ingredients — skip .ingredient.total rows
     const ingredients = [];
     $el.find('.ingredient').each((_, ing) => {
       const $ing = $(ing);
-      // The ingredient span contains: "Name — <span class='ingredient-amount'>amount</span>"
-      const spanEl = $ing.children('span').first();
-      const fullText = cleanText(spanEl.text());
-      const amountText = cleanText($ing.find('.ingredient-amount').text());
-      const macrosText = cleanText($ing.find('.ingredient-macros').text());
+      if ($ing.hasClass('total')) return; // skip the sum row
 
-      // Parse name: everything before the em dash
-      let name = fullText;
-      const dashIdx = fullText.indexOf('—');
-      if (dashIdx !== -1) {
-        name = fullText.substring(0, dashIdx).trim();
+      const ingMainText = cleanText($ing.find('.ing-main').text());
+      const ingMainHtml = $ing.find('.ing-main').html() || '';
+      const macrosText = cleanText($ing.find('.ing-macros').text());
+
+      // Parse name and amount from ing-main
+      // Format: "GF oats (certified) — 40g" where amount is in <strong>
+      let name = ingMainText;
+      let amount = '';
+
+      // Extract amount from <strong> tag
+      const $strong = $ing.find('.ing-main strong');
+      if ($strong.length) {
+        amount = cleanText($strong.text());
       }
-      // Remove trailing dash or whitespace
+
+      // Name is everything before " — "
+      const dashIdx = ingMainText.indexOf('—');
+      if (dashIdx !== -1) {
+        name = ingMainText.substring(0, dashIdx).trim();
+      } else {
+        // If no dash, remove the amount from the name
+        name = ingMainText.replace(amount, '').trim();
+      }
+      // Clean trailing whitespace/dashes
       name = name.replace(/[\s—]+$/, '').trim();
 
       ingredients.push({
         name,
-        amount: amountText,
+        amount,
         macros: macrosText,
       });
     });
@@ -127,28 +147,89 @@ function extractGroceryLists($) {
 
   $('.grocery-page').each((_, el) => {
     const $el = $(el);
-    const $week = $el.find('.grocery-week');
-    const title = cleanText($week.find('h2').text());
+    const $headerBar = $el.find('.grocery-header-bar');
+    const title = cleanText($headerBar.find('h2').text());
     if (!title) return;
 
     const weekMatch = title.match(/Week\s+(\d+)/);
     const weekNum = weekMatch ? parseInt(weekMatch[1], 10) : lists.length + 1;
-    const subtitle = cleanText($week.find('.grocery-week-subtitle').text());
+    const subtitle = cleanText($headerBar.find('p').text());
+
+    // Skip the supply-estimates page (it has a table, not grocery items)
+    if ($el.hasClass('supply-estimates-page')) {
+      // Store supply estimates separately if needed, but skip as grocery list
+      return;
+    }
 
     const categories = [];
-    $el.find('.grocery-section').each((_, sec) => {
-      const $sec = $(sec);
-      const catName = cleanText($sec.find('.grocery-category').text());
-      const items = [];
-      $sec.find('.grocery-item').each((_, item) => {
-        items.push({ text: cleanText($(item).text()) });
-      });
-      if (catName && items.length > 0) {
-        categories.push({ name: catName, items });
-      }
-    });
 
-    lists.push({ week: weekNum, title, subtitle, categories });
+    // Daily note (fixed items note at the top)
+    const dailyNote = cleanText($el.find('.daily-note').text());
+
+    // Walk direct children to build categories.
+    // h3.section-label may be followed by:
+    //   (a) a .grocery-grid directly (simple category)
+    //   (b) h4.sub-label + .grocery-grid pairs (pantry subcategories)
+    //   (c) .store-block elements (specialty stores)
+    // We track a "pending h3 name" so that if the next sibling is NOT a
+    // grocery-grid, the sub-labels/store-blocks inherit the parent name.
+    const children = $el.children().toArray();
+
+    let currentCategory = null;
+    let pendingH3 = null; // h3 name waiting for a grid or sub-items
+
+    for (const child of children) {
+      const $child = $(child);
+      const tagName = child.tagName?.toLowerCase();
+
+      if ($child.hasClass('section-label') && tagName === 'h3') {
+        // New top-level category heading
+        const catName = cleanText($child.text());
+        pendingH3 = catName;
+        currentCategory = null; // reset until we see items
+      } else if ($child.hasClass('grocery-grid')) {
+        // Items — attach to currentCategory (sub-label) or create from pendingH3
+        if (!currentCategory && pendingH3) {
+          currentCategory = { name: pendingH3, items: [] };
+          categories.push(currentCategory);
+          pendingH3 = null;
+        }
+        if (currentCategory) {
+          $child.find('.grocery-item').each((_, item) => {
+            const text = cleanText($(item).find('span').text());
+            if (text) currentCategory.items.push({ text });
+          });
+        }
+      } else if ($child.hasClass('sub-label') && tagName === 'h4') {
+        // Subcategory under a parent h3 (e.g. "Baking & Breakfast" under "Pantry Staples")
+        const subName = cleanText($child.text());
+        currentCategory = { name: subName, items: [] };
+        categories.push(currentCategory);
+        pendingH3 = null; // consumed by sub-labels
+      } else if ($child.hasClass('store-block')) {
+        // Specialty store section
+        const storeName = cleanText($child.find('.store-heading').text());
+        const storeCategory = { name: storeName, items: [] };
+        $child.find('.grocery-item').each((_, item) => {
+          const text = cleanText($(item).find('span').text());
+          if (text) storeCategory.items.push({ text });
+        });
+        if (storeCategory.items.length > 0) {
+          categories.push(storeCategory);
+        }
+        pendingH3 = null; // consumed by store-blocks
+      } else if ($child.hasClass('restock-note')) {
+        // Restock note — add as a special category
+        const restockText = cleanText($child.text());
+        if (restockText) {
+          categories.push({ name: 'Restock', items: [{ text: restockText }] });
+        }
+      }
+    }
+
+    const entry = { week: weekNum, title, subtitle, categories };
+    if (dailyNote) entry.dailyNote = dailyNote;
+    lists.push(entry);
   });
 
   return lists;
@@ -159,122 +240,133 @@ function extractGroceryLists($) {
 function extractInfoPages($) {
   const info = {};
 
-  // How to Use
-  const $howToUse = $('#how-to-use');
-  if ($howToUse.length) {
+  // How to Use Guide
+  const $howTo = $('#how-to-guide');
+  if ($howTo.length) {
+    const phases = [];
+    $howTo.find('.phase-info-card').each((_, card) => {
+      const $card = $(card);
+      phases.push({
+        label: cleanText($card.find('.phase-info-label').text()),
+        title: cleanText($card.find('h3').text()),
+        description: $card.find('p').not('.phase-info-label, .phase-meta').map((_, p) => cleanText($(p).text())).get().join(' '),
+        meta: cleanText($card.find('.phase-meta').text()),
+      });
+    });
+
     info.howToUse = {
-      eyebrow: cleanText($howToUse.find('.page-eyebrow').text()),
-      title: cleanText($howToUse.find('h2').text()),
-      intro: cleanText($howToUse.find('.intro-page-header p').text()),
-      startingInfo: cleanText($howToUse.find('h3').first().next('p').text()),
-      phases: [],
-      callout: cleanText($howToUse.find('.callout-box p').text()),
+      eyebrow: cleanText($howTo.find('.section-label').first().text()),
+      title: cleanText($howTo.find('h1').text()),
+      intro: cleanText($howTo.children('p').first().text()),
+      startingInfo: cleanText($howTo.find('h2').first().text()),
+      startingDescription: cleanText($howTo.find('h2').first().next('p').text()),
+      phases,
+      callout: cleanText($howTo.find('.callout-box p').text()),
     };
-    $howToUse.find('.phase-block').each((_, pb) => {
-      const $pb = $(pb);
-      info.howToUse.phases.push({
-        label: cleanText($pb.find('.phase-label').text()),
-        title: cleanText($pb.find('.phase-title').text()),
-        description: cleanText($pb.find('p').map((_, p) => $(p).text()).get().join(' ')),
-        mealsTag: cleanText($pb.find('.phase-meals-tag').text()),
-      });
-    });
   }
 
-  // Understanding Calories
-  const $cal = $('#understanding-calories');
-  if ($cal.length) {
-    info.understandingCalories = {
-      eyebrow: cleanText($cal.find('.page-eyebrow').text()),
-      title: cleanText($cal.find('h2').text()),
-      intro: cleanText($cal.find('.intro-page-header p').text()),
-      sections: [],
-      callout: cleanText($cal.find('.callout-box p').text()),
-    };
-    $cal.find('.info-row').each((_, row) => {
-      const $row = $(row);
-      info.understandingCalories.sections.push({
-        heading: cleanText($row.find('h4').text()),
-        text: cleanText($row.find('p').text()),
-      });
-    });
-    // Add the TDEE paragraph content
-    const tdeeParas = [];
-    $cal.find('h3').each((_, h3) => {
-      const $h3 = $(h3);
-      tdeeParas.push(cleanText($h3.text()));
-      $h3.nextUntil('div, h3').filter('p').each((_, p) => {
-        tdeeParas.push(cleanText($(p).text()));
-      });
-    });
-    info.understandingCalories.bodyText = tdeeParas.join('\n\n');
-  }
-
-  // Why Protein + Fiber
-  const $pf = $('#why-protein-fiber');
-  if ($pf.length) {
-    info.whyProteinFiber = {
-      eyebrow: cleanText($pf.find('.page-eyebrow').text()),
-      title: cleanText($pf.find('h2').text()),
-      intro: cleanText($pf.find('.intro-page-header p').text()),
-      proteinBadge: cleanText($pf.find('.nutrient-badge--protein').text()),
-      fiberBadge: cleanText($pf.find('.nutrient-badge--fiber').text()),
-      proteinText: [],
-      fiberReasons: [],
-    };
-    // Protein paragraphs (between protein badge and hr)
-    $pf.find('.nutrient-header').first().nextUntil('hr').filter('p').each((_, p) => {
-      info.whyProteinFiber.proteinText.push(cleanText($(p).text()));
-    });
-    // Fiber reasons
-    $pf.find('.fiber-list li').each((_, li) => {
-      const $li = $(li);
-      info.whyProteinFiber.fiberReasons.push({
-        heading: cleanText($li.find('h4').text()),
-        text: cleanText($li.find('p').text()),
-      });
-    });
-    // General fiber intro paragraph
-    const fiberIntro = $pf.find('hr').nextAll('p').first();
-    if (fiberIntro.length) {
-      info.whyProteinFiber.fiberIntro = cleanText(fiberIntro.text());
-    }
-  }
-
-  // Adrenal Cocktail
+  // Adrenal Cocktail info page
   const $ac = $('#adrenal-cocktail');
   if ($ac.length) {
-    info.adrenalCocktail = {
-      eyebrow: cleanText($ac.find('.page-eyebrow').text()),
-      title: cleanText($ac.find('h2').text()),
-      intro: cleanText($ac.find('.intro-page-header p').text()),
-      sections: [],
-      recipe: {
-        label: cleanText($ac.find('.recipe-card-label').text()),
-        title: cleanText($ac.find('.recipe-title').text()),
-        ingredients: [],
-        macrosNote: cleanText($ac.find('.recipe-macros-note').text()),
-      },
-      timing: [],
-    };
-    // Sections (What Is It, Why It Matters, When to Drink)
-    $ac.find('h3').each((_, h3) => {
-      const $h3 = $(h3);
-      const heading = cleanText($h3.text());
-      const paras = [];
-      $h3.nextUntil('h3, div').filter('p').each((_, p) => {
-        paras.push(cleanText($(p).text()));
-      });
-      info.adrenalCocktail.sections.push({ heading, text: paras.join(' ') });
+    const sections = [];
+    $ac.find('h2').each((_, h2) => {
+      const $h2 = $(h2);
+      const heading = cleanText($h2.text());
+      const nextP = $h2.next('p');
+      const text = nextP.length ? cleanText(nextP.text()) : '';
+      sections.push({ heading, text });
     });
-    // Recipe ingredients
-    $ac.find('.recipe-ingredients li').each((_, li) => {
-      info.adrenalCocktail.recipe.ingredients.push(cleanText($(li).text()));
-    });
-    // Timing pills
+
+    const timing = [];
     $ac.find('.timing-pill').each((_, pill) => {
-      info.adrenalCocktail.timing.push(cleanText($(pill).text()));
+      timing.push(cleanText($(pill).text()));
     });
+
+    info.adrenalCocktail = {
+      eyebrow: cleanText($ac.find('.section-label').first().text()),
+      title: cleanText($ac.find('h1').text()),
+      intro: cleanText($ac.children('p').first().text()),
+      sections,
+      timing,
+    };
+  }
+
+  // Adrenal Cocktail Recipe (separate page)
+  const $acRecipe = $('.adrenal-recipe-page');
+  if ($acRecipe.length) {
+    const ingredients = [];
+    $acRecipe.find('.ref-ingredient').each((_, ing) => {
+      ingredients.push(cleanText($(ing).text()));
+    });
+
+    info.adrenalCocktailRecipe = {
+      eyebrow: cleanText($acRecipe.find('.section-label').first().text()),
+      title: cleanText($acRecipe.find('h1').text()),
+      recipeTitle: cleanText($acRecipe.find('.ref-recipe-header h2').text()),
+      recipeSubtitle: cleanText($acRecipe.find('.ref-recipe-header .section-label').text()),
+      ingredients,
+      totals: cleanText($acRecipe.find('.ref-total-main').text()),
+      note: cleanText($acRecipe.find('.ref-total-note').text()),
+    };
+  }
+
+  // Supply Estimates
+  const $supplies = $('.supply-estimates-page');
+  if ($supplies.length) {
+    const items = [];
+    $supplies.find('.estimates-table tbody tr').each((_, row) => {
+      const cells = $(row).find('td');
+      if (cells.length >= 4) {
+        items.push({
+          item: cleanText($(cells[0]).text()),
+          weeklyUse: cleanText($(cells[1]).text()),
+          thirtyDayTotal: cleanText($(cells[2]).text()),
+          buy: cleanText($(cells[3]).text()),
+        });
+      }
+    });
+    info.supplyEstimates = {
+      title: cleanText($supplies.find('.grocery-header-bar h2').text()),
+      subtitle: cleanText($supplies.find('.grocery-header-bar p').text()),
+      items,
+    };
+  }
+
+  // Phase Dividers
+  const phaseDividers = [];
+  $('.phase-divider').each((_, el) => {
+    const $el = $(el);
+    phaseDividers.push({
+      label: cleanText($el.find('.phase-label-small').text()),
+      title: cleanText($el.find('h1').text()),
+      description: cleanText($el.find('.phase-divider-inner > p').first().text()),
+      detail: cleanText($el.find('.phase-detail').text()),
+    });
+  });
+  if (phaseDividers.length > 0) {
+    info.phaseDividers = phaseDividers;
+  }
+
+  // What's Next page
+  const $next = $('#whats-next');
+  if ($next.length) {
+    const options = [];
+    $next.find('.next-step-card').each((_, card) => {
+      const $card = $(card);
+      options.push({
+        title: cleanText($card.find('.next-step-card-title').text()),
+        description: cleanText($card.find('p').not('.next-step-card-title').text()),
+      });
+    });
+
+    info.whatsNext = {
+      eyebrow: cleanText($next.find('.section-label').first().text()),
+      title: cleanText($next.find('h1').text()),
+      intro: cleanText($next.find('.intro-text').text()),
+      kicker: cleanText($next.find('.next-steps-kicker').text()),
+      options,
+      closingNote: cleanText($next.find('.closing-note').text()),
+    };
   }
 
   return info;
@@ -306,22 +398,22 @@ function validate(data) {
       }
     }
 
-    // Macro sum check: meal macros + 320 cal / 8g protein for adrenal cocktails should match day totals
+    // Macro sum check: meal macros + 248 cal / 28g protein for adrenal cocktails + bone broth
     const mealCalSum = day.meals.reduce((s, m) => s + m.macros.calories, 0);
     const mealProteinSum = day.meals.reduce((s, m) => s + m.macros.protein, 0);
     const mealFiberSum = day.meals.reduce((s, m) => s + m.macros.fiber, 0);
 
-    const expectedCal = mealCalSum + 320;
-    const expectedProtein = mealProteinSum + 8;
-    const expectedFiber = mealFiberSum; // adrenal cocktails have 0 fiber
+    const expectedCal = mealCalSum + 248;
+    const expectedProtein = mealProteinSum + 28;
+    const expectedFiber = mealFiberSum; // adrenal cocktails + bone broth have ~0 fiber
 
-    // Allow small rounding tolerance
-    const tolerance = 2;
+    // Allow ±10 rounding tolerance (source HTML has rounding in day totals)
+    const tolerance = 10;
     if (Math.abs(expectedCal - day.totals.calories) > tolerance) {
-      errors.push(`Day ${day.day}: cal mismatch — meals(${mealCalSum}) + 320 = ${expectedCal}, expected ${day.totals.calories}`);
+      errors.push(`Day ${day.day}: cal mismatch — meals(${mealCalSum}) + 248 = ${expectedCal}, expected ${day.totals.calories}`);
     }
     if (Math.abs(expectedProtein - day.totals.protein) > tolerance) {
-      errors.push(`Day ${day.day}: protein mismatch — meals(${mealProteinSum}) + 8 = ${expectedProtein}, expected ${day.totals.protein}`);
+      errors.push(`Day ${day.day}: protein mismatch — meals(${mealProteinSum}) + 28 = ${expectedProtein}, expected ${day.totals.protein}`);
     }
     if (Math.abs(expectedFiber - day.totals.fiber) > tolerance) {
       errors.push(`Day ${day.day}: fiber mismatch — meals(${mealFiberSum}) = ${expectedFiber}, expected ${day.totals.fiber}`);
@@ -333,9 +425,9 @@ function validate(data) {
     }
   }
 
-  // 4 grocery weeks
-  if (data.groceryLists.length !== 4) {
-    errors.push(`Expected 4 grocery weeks, got ${data.groceryLists.length}`);
+  // Grocery lists — expect at least 4 weekly lists (may have 5 if week 5 exists)
+  if (data.groceryLists.length < 4) {
+    errors.push(`Expected at least 4 grocery weeks, got ${data.groceryLists.length}`);
   }
   for (const gl of data.groceryLists) {
     if (gl.categories.length === 0) {
@@ -350,9 +442,9 @@ function validate(data) {
 
   // Info pages
   if (!data.info.howToUse) errors.push('Missing info: howToUse');
-  if (!data.info.understandingCalories) errors.push('Missing info: understandingCalories');
-  if (!data.info.whyProteinFiber) errors.push('Missing info: whyProteinFiber');
   if (!data.info.adrenalCocktail) errors.push('Missing info: adrenalCocktail');
+  if (!data.info.adrenalCocktailRecipe) errors.push('Missing info: adrenalCocktailRecipe');
+  if (!data.info.whatsNext) errors.push('Missing info: whatsNext');
 
   return errors;
 }
@@ -360,40 +452,28 @@ function validate(data) {
 // ── Main ──
 
 function main() {
-  console.log('Loading HTML files...');
-  const mealPlanHtml = fs.readFileSync(MEAL_PLAN_HTML, 'utf-8');
-  const groceryHtml = fs.readFileSync(GROCERY_HTML, 'utf-8');
+  console.log('Loading HTML file...');
+  const html = fs.readFileSync(SOURCE_HTML, 'utf-8');
 
-  console.log('Parsing meal plan...');
-  const $mp = cheerio.load(mealPlanHtml);
+  console.log('Parsing HTML...');
+  const $ = cheerio.load(html);
 
   console.log('Extracting days...');
-  const days = extractDays($mp);
+  const days = extractDays($);
   console.log(`  Found ${days.length} days`);
 
   console.log('Extracting meals...');
-  extractMeals($mp, days);
+  extractMeals($, days);
   for (const d of days) {
     console.log(`  Day ${d.day} (${d.phase}): ${d.meals.length} meals`);
   }
 
-  console.log('Extracting grocery lists from meal plan HTML...');
-  const groceryFromMealPlan = extractGroceryLists($mp);
-  console.log(`  Found ${groceryFromMealPlan.length} weeks from meal plan`);
-
-  console.log('Parsing grocery HTML...');
-  const $gr = cheerio.load(groceryHtml);
-  const groceryFromGroceryFile = extractGroceryLists($gr);
-  console.log(`  Found ${groceryFromGroceryFile.length} weeks from grocery file`);
-
-  // Use the grocery file as primary source (it's the dedicated file)
-  const groceryLists = groceryFromGroceryFile.length >= 4
-    ? groceryFromGroceryFile
-    : groceryFromMealPlan;
-  console.log(`  Using ${groceryLists === groceryFromGroceryFile ? 'grocery file' : 'meal plan'} as source`);
+  console.log('Extracting grocery lists...');
+  const groceryLists = extractGroceryLists($);
+  console.log(`  Found ${groceryLists.length} grocery lists`);
 
   console.log('Extracting info pages...');
-  const info = extractInfoPages($mp);
+  const info = extractInfoPages($);
   console.log(`  Found ${Object.keys(info).length} info sections`);
 
   const data = { days, groceryLists, info };
@@ -409,6 +489,12 @@ function main() {
     console.log('  All validations passed!');
   }
 
+  // Ensure output directory exists
+  const outputDir = path.dirname(OUTPUT);
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+
   console.log(`\nWriting ${OUTPUT}...`);
   fs.writeFileSync(OUTPUT, JSON.stringify(data, null, 2), 'utf-8');
   console.log('Done!');
@@ -417,7 +503,7 @@ function main() {
   console.log(`\n=== SUMMARY ===`);
   console.log(`Days: ${data.days.length}`);
   console.log(`Total meals: ${data.days.reduce((s, d) => s + d.meals.length, 0)}`);
-  console.log(`Grocery weeks: ${data.groceryLists.length}`);
+  console.log(`Grocery lists: ${data.groceryLists.length}`);
   console.log(`Info sections: ${Object.keys(data.info).length}`);
   console.log(`Validation errors: ${errors.length}`);
 
