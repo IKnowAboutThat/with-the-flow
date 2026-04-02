@@ -216,7 +216,7 @@
     dayData.meals.forEach(function (meal, mealIdx) {
       var mealKey = state.currentDay + '-' + mealIdx;
       var isExpanded = state.expandedMeals.indexOf(mealKey) !== -1;
-      var isSnack = meal.label.toLowerCase() === 'snack';
+      var isSnack = meal.label.toLowerCase() === 'treat';
       var cardClass = 'meal-card' + (isSnack ? ' snack' : '');
 
       html += '<div class="' + cardClass + '">';
