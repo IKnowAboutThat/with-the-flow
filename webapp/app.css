@@ -577,7 +577,7 @@ body {
   z-index: 100;
 }
 
-.tab-btn {
+.tab {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -590,24 +590,24 @@ body {
   min-width: 60px;
 }
 
-.tab-btn svg {
+.tab svg {
   width: 24px;
   height: 24px;
   color: var(--text-muted);
   transition: color 0.15s;
 }
 
-.tab-btn span {
+.tab span {
   font-size: 10px;
   font-weight: 600;
   color: var(--text-muted);
   transition: color 0.15s;
 }
 
-.tab-btn.active svg {
+.tab.active svg {
   color: var(--terracotta);
 }
 
-.tab-btn.active span {
+.tab.active span {
   color: var(--terracotta);
 }
