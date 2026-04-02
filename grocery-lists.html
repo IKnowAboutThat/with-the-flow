@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>With the Flow — 4-Week Grocery Lists</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Grocery Cover Page ── */
+    .grocery-cover {
+      width: 6in;
+      height: 9in;
+      background: linear-gradient(160deg, #A0725C 0%, #8B6350 55%, #6b4c3a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0.5in;
+      color: #FFFFFF;
+      page-break-after: always;
+      position: relative;
+    }
+
+    .grocery-cover .cover-eyebrow {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 20px;
+      font-family: var(--font-sans);
+    }
+
+    .grocery-cover .cover-title {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: normal;
+      color: #FFFFFF;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .grocery-cover .cover-subtitle {
+      font-family: var(--font-sans);
+      font-size: 18px;
+      opacity: 0.9;
+      letter-spacing: 1px;
+      margin-bottom: 32px;
+      color: #FFFFFF;
+    }
+
+    .grocery-cover .cover-badges {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .grocery-cover .cover-badge {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+    }
+
+    .grocery-cover .cover-notes {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 18px 24px;
+      max-width: 4.2in;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .grocery-cover .cover-note {
+      font-size: 12px;
+      opacity: 0.88;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .grocery-cover .cover-note:last-child {
+      margin-bottom: 0;
+    }
+
+    .grocery-cover .cover-note strong {
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .grocery-cover .cover-tip {
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 14px 20px;
+      max-width: 4.2in;
+      font-size: 11.5px;
+      opacity: 0.85;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      font-style: italic;
+    }
+
+    .grocery-cover .print-disclaimer {
+      position: absolute;
+      bottom: 0.5in;
+      left: 0.5in;
+      right: 0.5in;
+      font-size: 9px;
+      text-align: center;
+      opacity: 0.5;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      line-height: 1.5;
+    }
+
+    /* ── Grocery Week Pages ── */
+    .grocery-page {
+      page-break-before: always;
+      background: var(--bg-warm);
+      padding: 0;
+    }
+
+    .grocery-week--luteal {
+      background: linear-gradient(135deg, #7A8B6F, #5C6B52);
+    }
+
+    .grocery-week .grocery-week-phase-note {
+      font-size: 11px;
+      opacity: 0.7;
+      font-style: italic;
+      margin-top: 8px;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+    }
+
+    .grocery-section {
+      page-break-inside: avoid;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       COVER PAGE
+  ════════════════════════════════════════════════════ -->
+  <div class="grocery-cover">
+    <div class="cover-eyebrow">Whitney's Meal Plan</div>
+    <div class="cover-title">With the Flow</div>
+    <div class="cover-subtitle">4-Week Grocery Lists</div>
+
+    <div class="cover-badges">
+      <span class="cover-badge">Dairy-Free</span>
+      <span class="cover-badge">Gluten-Free</span>
+    </div>
+
+    <div class="cover-notes">
+      <div class="cover-note"><strong>Weeks 1–3:</strong> Standard Phase (2 meals + 1 snack per day)</div>
+      <div class="cover-note"><strong>Week 4 (Days 22–30):</strong> Full Luteal Phase (3 meals + 1 snack per day)</div>
+    </div>
+
+    <div class="cover-tip">
+      Most pantry staples (spices, oils, sauces) only need to be purchased once. Weeks 2–4 call them out as "check if any left" so you only restock what you actually need.
+    </div>
+
+    <div class="print-disclaimer">
+      For personal use only. Please do not redistribute or resell this document.
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       WEEK 1 — Days 1–7
+  ════════════════════════════════════════════════════ -->
+  <div class="grocery-page">
+
+    <div class="grocery-week">
+      <h2>Week 1 — Days 1–7</h2>
+      <div class="grocery-week-subtitle">Standard Phase &nbsp;·&nbsp; 2 meals + 1 snack per day</div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Produce</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Baby spinach — 1 large bag (5 oz)</div>
+        <div class="grocery-item">Broccoli — 1.5 lbs</div>
+        <div class="grocery-item">Avocados — 4–5 ripe</div>
+        <div class="grocery-item">Cauliflower or pre-riced — 1.5 lbs</div>
+        <div class="grocery-item">Cucumber — 3–4 medium</div>
+        <div class="grocery-item">Romaine lettuce — 2 heads</div>
+        <div class="grocery-item">Snap peas — ½ lb</div>
+        <div class="grocery-item">Sweet potato — 2–3 medium</div>
+        <div class="grocery-item">Shredded cabbage or ½ head green cabbage</div>
+        <div class="grocery-item">Bell peppers — 2 medium</div>
+        <div class="grocery-item">Celery — 1 bunch</div>
+        <div class="grocery-item">Endive — 1–2 heads</div>
+        <div class="grocery-item">Butter lettuce — 1 head</div>
+        <div class="grocery-item">Zucchini — 1 medium</div>
+        <div class="grocery-item">Onion — 2 medium</div>
+        <div class="grocery-item">Diced tomatoes — 2 medium or 1 can</div>
+        <div class="grocery-item">Shredded carrot — 1 large carrot</div>
+        <div class="grocery-item">Fresh lemon — 2–3</div>
+        <div class="grocery-item">Fresh lime — 3–4</div>
+        <div class="grocery-item">Fresh ginger — 1 small knob</div>
+        <div class="grocery-item">Fresh garlic — 1 head</div>
+        <div class="grocery-item">Scallions (green onions) — 1 bunch</div>
+        <div class="grocery-item">Fresh cilantro — 1 bunch</div>
+        <div class="grocery-item">Fresh Thai basil — 1 bunch</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Adrenal Cocktail</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Coconut water — ~3.5 liters (about 3 large cartons, for 14 cocktails)</div>
+        <div class="grocery-item">Coconut milk — 1 can (you only need 1–2 tbsp per cocktail)</div>
+        <div class="grocery-item">Oranges — 7 (half an orange per cocktail)</div>
+        <div class="grocery-item">Salt — already in pantry</div>
+        <div class="grocery-item">Cream of tartar — 1 small container (lasts all month)</div>
+        <div class="grocery-item">Collagen peptides — 1 tub (~14 scoops this week)</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Proteins</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Shrimp, peeled &amp; cooked (or raw) — ~1.75 lbs</div>
+        <div class="grocery-item">Chicken breast — ~1.5 lbs</div>
+        <div class="grocery-item">Ground turkey, 93% lean — ~1 lb</div>
+        <div class="grocery-item">Canned tuna in water — 4–5 cans (5 oz each)</div>
+        <div class="grocery-item">Turkey breast, deli-sliced — ½ lb</div>
+        <div class="grocery-item">Salmon fillet — 1 small (3–4 oz)</div>
+        <div class="grocery-item">Eggs — 1 dozen</div>
+        <div class="grocery-item">Egg whites — 1 small carton</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Legumes</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Black beans, canned — two 15 oz cans</div>
+        <div class="grocery-item">Chickpeas, canned — two 15 oz cans</div>
+        <div class="grocery-item">Green lentils, dried — ½ cup dry (or 1 can)</div>
+        <div class="grocery-item">Red lentils, dried — ½ cup dry</div>
+        <div class="grocery-item">Edamame, shelled &amp; frozen — 1 bag (12–16 oz)</div>
+        <div class="grocery-item">Hummus (GF) — 1 small container (10 oz)</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Grains</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Brown rice — 1 cup dry</div>
+        <div class="grocery-item">Quinoa — ½ cup dry</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Sauces &amp; Condiments</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">GF miso paste — 1 small tub</div>
+        <div class="grocery-item">Coconut aminos — 1 bottle</div>
+        <div class="grocery-item">Sesame oil — 1 small bottle</div>
+        <div class="grocery-item">Gochujang (GF) — 1 small jar</div>
+        <div class="grocery-item">GF curry paste — 1 jar</div>
+        <div class="grocery-item">GF tikka masala paste — 1 jar</div>
+        <div class="grocery-item">Harissa paste (GF) — 1 jar</div>
+        <div class="grocery-item">GF BBQ sauce — 1 bottle</div>
+        <div class="grocery-item">GF salsa roja — 1 jar</div>
+        <div class="grocery-item">GF salsa verde — 1 small jar</div>
+        <div class="grocery-item">GF cocktail sauce — 1 small bottle</div>
+        <div class="grocery-item">GF Thai chili paste — 1 small jar</div>
+        <div class="grocery-item">Aji amarillo paste (GF) — 1 small jar</div>
+        <div class="grocery-item">GF fish sauce — 1 small bottle</div>
+        <div class="grocery-item">Tahini — 1 small jar</div>
+        <div class="grocery-item">Dijon mustard (GF) — 1 small jar</div>
+        <div class="grocery-item">Kalamata olives — 1 small jar</div>
+        <div class="grocery-item">Guacamole, store-bought — 1 small container</div>
+        <div class="grocery-item">Hot sauce — 1 bottle</div>
+        <div class="grocery-item">Rice vinegar — 1 small bottle</div>
+        <div class="grocery-item">Pickled ginger (GF) — 1 small jar</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Pantry / Spices</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Cumin, ground</div>
+        <div class="grocery-item">Coriander, ground</div>
+        <div class="grocery-item">Paprika (smoked or sweet)</div>
+        <div class="grocery-item">Turmeric, ground</div>
+        <div class="grocery-item">Garam masala (GF)</div>
+        <div class="grocery-item">Chili powder (GF)</div>
+        <div class="grocery-item">Oregano, dried</div>
+        <div class="grocery-item">Onion powder</div>
+        <div class="grocery-item">Red chili flakes</div>
+      </div>
+    </div>
+
+  </div><!-- end Week 1 -->
+
+
+  <!-- ═══════════════════════════════════════════════════
+       WEEK 2 — Days 8–14
+  ════════════════════════════════════════════════════ -->
+  <div class="grocery-page">
+
+    <div class="grocery-week">
+      <h2>Week 2 — Days 8–14</h2>
+      <div class="grocery-week-subtitle">Standard Phase &nbsp;·&nbsp; 2 meals + 1 snack per day</div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Produce</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Baby spinach — 1 large bag (5 oz)</div>
+        <div class="grocery-item">Broccoli — 1.25 lbs</div>
+        <div class="grocery-item">Avocados — 4–5 ripe</div>
+        <div class="grocery-item">Cauliflower (for ricing) — 2 lbs</div>
+        <div class="grocery-item">Cucumber — 3 medium</div>
+        <div class="grocery-item">Romaine lettuce — 1 head</div>
+        <div class="grocery-item">Snap peas — ⅓ lb</div>
+        <div class="grocery-item">Shredded cabbage — ½ head</div>
+        <div class="grocery-item">Bell peppers — 2 medium</div>
+        <div class="grocery-item">Celery — ½ bunch</div>
+        <div class="grocery-item">Endive — 1 head</div>
+        <div class="grocery-item">Butter lettuce — 1 head</div>
+        <div class="grocery-item">Zucchini — 1 medium</div>
+        <div class="grocery-item">Asparagus — 1 small bunch</div>
+        <div class="grocery-item">Mushrooms — 3–4 oz</div>
+        <div class="grocery-item">Bok choy — 1 small head</div>
+        <div class="grocery-item">Diced tomatoes — 2 medium or 1 can</div>
+        <div class="grocery-item">Fresh lime — 5–6</div>
+        <div class="grocery-item">Fresh lemon — 3–4</div>
+        <div class="grocery-item">Fresh mango — 1 small (a few slices)</div>
+        <div class="grocery-item">Fresh ginger — 1 small knob</div>
+        <div class="grocery-item">Fresh garlic — 1 head</div>
+        <div class="grocery-item">Scallions — 1 bunch</div>
+        <div class="grocery-item">Fresh cilantro — 1 bunch</div>
+        <div class="grocery-item">Fresh mint — 1 small bunch</div>
+        <div class="grocery-item">Shallots — 2</div>
+        <div class="grocery-item">Red onion — 1</div>
+        <div class="grocery-item">Lemongrass — 2 stalks</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Adrenal Cocktail</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Coconut water — ~3.5 liters (about 3 large cartons, for 14 cocktails)</div>
+        <div class="grocery-item">Coconut milk — check if any left from Wk 1, restock if needed</div>
+        <div class="grocery-item">Oranges — 7 (half an orange per cocktail)</div>
+        <div class="grocery-item">Salt — already in pantry</div>
+        <div class="grocery-item">Cream of tartar — check if any left from Wk 1</div>
+        <div class="grocery-item">Collagen peptides — ~14 scoops this week (check tub)</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Proteins</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Shrimp, peeled &amp; cooked (or raw) — ~1.75 lbs</div>
+        <div class="grocery-item">Chicken breast — ~1.25 lbs</div>
+        <div class="grocery-item">Ground turkey, 93% lean — ~13 oz</div>
+        <div class="grocery-item">Canned tuna in water — 3–4 cans (5 oz each)</div>
+        <div class="grocery-item">Turkey breast, deli-sliced — ½ lb</div>
+        <div class="grocery-item">Salmon fillet — 2 small (6 oz total)</div>
+        <div class="grocery-item">Eggs — 1 dozen</div>
+        <div class="grocery-item">Egg whites — 1 small carton</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Legumes</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Green lentils, dried — 1.25 cups dry (or 3 cans)</div>
+        <div class="grocery-item">Red lentils, dried — ¼ cup dry</div>
+        <div class="grocery-item">Black beans, canned — one 15 oz can</div>
+        <div class="grocery-item">Chickpeas, canned — one 15 oz can</div>
+        <div class="grocery-item">Edamame, shelled &amp; frozen — 1 bag (12–16 oz)</div>
+        <div class="grocery-item">Hummus (GF) — 1 small container</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Grains</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Brown rice — ½ cup dry</div>
+        <div class="grocery-item">Quinoa — ¼ cup dry</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Sauces &amp; Condiments</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Shawarma spice blend (GF) — 1 packet</div>
+        <div class="grocery-item">GF tikka paste — check if any left from Wk 1</div>
+        <div class="grocery-item">Harissa paste (GF) — check if any left from Wk 1</div>
+        <div class="grocery-item">Gochujang (GF) — check if any left</div>
+        <div class="grocery-item">GF miso paste — check if any left</div>
+        <div class="grocery-item">Coconut aminos — check if any left</div>
+        <div class="grocery-item">Sesame oil — check if any left</div>
+        <div class="grocery-item">Tahini — restock if needed</div>
+        <div class="grocery-item">Dijon mustard (GF) — check if any left</div>
+        <div class="grocery-item">Kalamata olives — check if any left</div>
+        <div class="grocery-item">GF fish sauce — check if any left</div>
+        <div class="grocery-item">GF salsa roja — 1 jar</div>
+        <div class="grocery-item">GF salsa verde — 1 small jar</div>
+        <div class="grocery-item">GF tamarind paste — 1 small jar</div>
+        <div class="grocery-item">Light coconut milk — 1 small can</div>
+      </div>
+    </div>
+
+  </div><!-- end Week 2 -->
+
+
+  <!-- ═══════════════════════════════════════════════════
+       WEEK 3 — Days 15–21
+  ════════════════════════════════════════════════════ -->
+  <div class="grocery-page">
+
+    <div class="grocery-week">
+      <h2>Week 3 — Days 15–21</h2>
+      <div class="grocery-week-subtitle">Standard Phase &nbsp;·&nbsp; 2 meals + 1 snack per day</div>
+      <div class="grocery-week-phase-note">Phase transition: Standard Phase ends / Luteal Phase begins Day 21</div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Produce</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Baby spinach — 2 large bags (5 oz each)</div>
+        <div class="grocery-item">Broccoli — 1.5 lbs</div>
+        <div class="grocery-item">Avocados — 3 ripe</div>
+        <div class="grocery-item">Cauliflower (for ricing) — 1.75 lbs</div>
+        <div class="grocery-item">Cucumber — 2 medium</div>
+        <div class="grocery-item">Zucchini — 3 medium (2 for noodles, 1 regular)</div>
+        <div class="grocery-item">Snap peas — ¾ lb</div>
+        <div class="grocery-item">Shredded cabbage — ½ head</div>
+        <div class="grocery-item">Bell peppers — 4 medium (2 for stuffing, 2 for eating)</div>
+        <div class="grocery-item">Celery — 1 bunch</div>
+        <div class="grocery-item">Endive — 2 heads</div>
+        <div class="grocery-item">Eggplant — 1 medium</div>
+        <div class="grocery-item">Asparagus — 1 small bunch</div>
+        <div class="grocery-item">Bok choy — 1 small head</div>
+        <div class="grocery-item">Mushrooms — 3 oz</div>
+        <div class="grocery-item">Sweet potato — 2 small</div>
+        <div class="grocery-item">Diced tomatoes — 3 medium or 1.5 cans</div>
+        <div class="grocery-item">Onion — 3 medium</div>
+        <div class="grocery-item">Fresh lime — 3–4</div>
+        <div class="grocery-item">Fresh lemon — 3–4</div>
+        <div class="grocery-item">Fresh ginger — 1 knob</div>
+        <div class="grocery-item">Fresh garlic — 1 head</div>
+        <div class="grocery-item">Scallions — 1 bunch</div>
+        <div class="grocery-item">Fresh cilantro — 1 bunch</div>
+        <div class="grocery-item">Fresh dill — 1 small bunch (for tzatziki)</div>
+        <div class="grocery-item">Fresh parsley — 1 bunch (for chimichurri)</div>
+        <div class="grocery-item">Red onion — 1</div>
+        <div class="grocery-item">Lemongrass — 2 stalks</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Adrenal Cocktail</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Coconut water — ~3.5 liters (about 3 large cartons, for 14 cocktails)</div>
+        <div class="grocery-item">Coconut milk — check if any left from Wk 1–2, restock if needed</div>
+        <div class="grocery-item">Oranges — 7 (half an orange per cocktail)</div>
+        <div class="grocery-item">Salt — already in pantry</div>
+        <div class="grocery-item">Cream of tartar — check if any left from Wk 1</div>
+        <div class="grocery-item">Collagen peptides — ~14 scoops this week (check tub)</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Proteins</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Shrimp, peeled &amp; cooked (or raw) — ~2 lbs</div>
+        <div class="grocery-item">Chicken breast — ~1.5 lbs</div>
+        <div class="grocery-item">Ground turkey, 93% lean — ~1 lb</div>
+        <div class="grocery-item">Canned tuna in water — 4 cans (5 oz each)</div>
+        <div class="grocery-item">Turkey breast, deli-sliced — ¾ lb</div>
+        <div class="grocery-item">Salmon fillet — 1 fillet (3–4 oz)</div>
+        <div class="grocery-item">Eggs — 1 dozen</div>
+        <div class="grocery-item">Egg whites — 1 carton</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Legumes</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Green lentils, dried — 1 cup dry</div>
+        <div class="grocery-item">Red lentils, dried — ¾ cup dry</div>
+        <div class="grocery-item">Black beans, canned — one 15 oz can</div>
+        <div class="grocery-item">Chickpeas, canned — one 15 oz can</div>
+        <div class="grocery-item">Edamame, shelled &amp; frozen — 1 bag (12 oz)</div>
+        <div class="grocery-item">Hummus (GF) — 1 small container</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Grains</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Quinoa — ¼ cup dry</div>
+        <div class="grocery-item">Brown rice — check if any left from Wk 1–2</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Sauces &amp; Condiments</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Unsweetened coconut yogurt — 1 small container (dairy-free tzatziki)</div>
+        <div class="grocery-item">GF salsa roja — 1 jar</div>
+        <div class="grocery-item">Chimichurri sauce (GF, store-bought or homemade)</div>
+        <div class="grocery-item">GF tamarind paste — check if any left from Wk 2</div>
+        <div class="grocery-item">GF BBQ sauce — check if any left</div>
+        <div class="grocery-item">Olive oil — 1 bottle</div>
+        <div class="grocery-item">Tomato paste — 1 small can</div>
+        <div class="grocery-item">Baharat spice blend (GF) — 1 packet or make from pantry</div>
+        <div class="grocery-item">All Week 1 sauces — check and restock anything low</div>
+      </div>
+    </div>
+
+  </div><!-- end Week 3 -->
+
+
+  <!-- ═══════════════════════════════════════════════════
+       WEEK 4 — Days 22–30
+  ════════════════════════════════════════════════════ -->
+  <div class="grocery-page">
+
+    <div class="grocery-week grocery-week--luteal">
+      <h2>Week 4 — Days 22–30</h2>
+      <div class="grocery-week-subtitle">Full Luteal Phase &nbsp;·&nbsp; 3 meals + 1 snack per day &nbsp;·&nbsp; 9 days</div>
+      <div class="grocery-week-phase-note">More food this week — quantities are larger to support the full Luteal Phase</div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Produce</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Baby spinach — 2 large bags (5 oz each)</div>
+        <div class="grocery-item">Broccoli — 1.75 lbs</div>
+        <div class="grocery-item">Avocados — 4–5 ripe</div>
+        <div class="grocery-item">Cauliflower (for ricing) — 2 lbs</div>
+        <div class="grocery-item">Cucumber — 3 medium</div>
+        <div class="grocery-item">Romaine lettuce — 2 heads</div>
+        <div class="grocery-item">Snap peas — ½ lb</div>
+        <div class="grocery-item">Shredded cabbage — ½ head</div>
+        <div class="grocery-item">Bell peppers — 3 medium</div>
+        <div class="grocery-item">Celery — ½ bunch</div>
+        <div class="grocery-item">Endive — 1 head</div>
+        <div class="grocery-item">Butter lettuce — 1 head</div>
+        <div class="grocery-item">Zucchini — 1 medium</div>
+        <div class="grocery-item">Sweet potato — 2 small</div>
+        <div class="grocery-item">Diced tomatoes — 2 medium or 1 can</div>
+        <div class="grocery-item">Fresh lemon — 3–4</div>
+        <div class="grocery-item">Fresh lime — 5–6</div>
+        <div class="grocery-item">Fresh ginger — 1 knob</div>
+        <div class="grocery-item">Fresh garlic — 1 head</div>
+        <div class="grocery-item">Scallions — 1 bunch</div>
+        <div class="grocery-item">Fresh cilantro — 1 bunch</div>
+        <div class="grocery-item">Fresh mint — 1 small bunch</div>
+        <div class="grocery-item">Shallots — 2</div>
+        <div class="grocery-item">Lemongrass — 2 stalks</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Adrenal Cocktail</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Coconut water — ~4.5 liters (about 4 large cartons, for 18 cocktails)</div>
+        <div class="grocery-item">Coconut milk — check if any left, restock if needed</div>
+        <div class="grocery-item">Oranges — 9 (half an orange per cocktail)</div>
+        <div class="grocery-item">Salt — already in pantry</div>
+        <div class="grocery-item">Cream of tartar — check if any left</div>
+        <div class="grocery-item">Collagen peptides — ~18 scoops this week, restock if needed</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Proteins</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Shrimp, peeled &amp; cooked (or raw) — ~2.25 lbs</div>
+        <div class="grocery-item">Chicken breast — ~1.25 lbs</div>
+        <div class="grocery-item">Ground turkey, 93% lean — ~10 oz</div>
+        <div class="grocery-item">Canned tuna in water — 5 cans (5 oz each)</div>
+        <div class="grocery-item">Turkey breast, deli-sliced — 1 lb (lots of snacks this week)</div>
+        <div class="grocery-item">Turkey breast, whole roasted or sliced — ¾ lb</div>
+        <div class="grocery-item">Salmon fillet — 2 fillets (~10 oz total)</div>
+        <div class="grocery-item">Eggs — 1 dozen</div>
+        <div class="grocery-item">Egg whites — 1 large carton</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Legumes</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Red lentils, dried — 1 cup dry</div>
+        <div class="grocery-item">Green lentils, dried — ¾ cup dry</div>
+        <div class="grocery-item">Black beans, canned — two 15 oz cans</div>
+        <div class="grocery-item">Chickpeas, canned — two 15 oz cans</div>
+        <div class="grocery-item">Edamame, shelled &amp; frozen — 1 large bag (16 oz)</div>
+        <div class="grocery-item">Hummus (GF) — 1 small container</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Grains</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Brown rice — ½ cup dry</div>
+        <div class="grocery-item">Quinoa — ½ cup dry</div>
+      </div>
+    </div>
+
+    <div class="grocery-section no-break">
+      <span class="grocery-category">Sauces &amp; Condiments</span>
+      <div class="grocery-grid">
+        <div class="grocery-item">Unsweetened coconut yogurt — 1 small container</div>
+        <div class="grocery-item">GF miso paste — restock</div>
+        <div class="grocery-item">GF curry paste — restock</div>
+        <div class="grocery-item">Harissa paste (GF) — restock</div>
+        <div class="grocery-item">GF salsa roja — 1 jar</div>
+        <div class="grocery-item">Chimichurri sauce (GF) — 1 small jar</div>
+        <div class="grocery-item">GF cocktail sauce — 1 small jar</div>
+        <div class="grocery-item">GF BBQ sauce — check if any left</div>
+        <div class="grocery-item">All pantry staples — check and restock anything low</div>
+      </div>
+    </div>
+
+  </div><!-- end Week 4 -->
+
+</body>
+</html>

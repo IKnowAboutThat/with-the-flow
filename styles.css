@@ -1,0 +1,551 @@
+/* ============================================================
+   WITH THE FLOW — Design System
+   Page: 6in x 9in  |  Margins: 0.5in
+   Palette: Terracotta + Sage
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   Page Setup
+   ---------------------------------------------------------- */
+@page {
+  size: 6in 9in;
+  margin: 0.55in 0.5in 0.6in 0.5in;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: #FAF7F2;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #3A2F28;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 17px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ----------------------------------------------------------
+   CSS Custom Properties
+   ---------------------------------------------------------- */
+:root {
+  /* Colors */
+  --terracotta:       #A0725C;
+  --terracotta-dark:  #8B6350;
+  --sage:             #7A8B6F;
+  --sage-dark:        #5C6B52;
+  --bg-warm:          #FAF7F2;
+  --border:           #ede4d8;
+  --text-body:        #3A2F28;
+  --text-secondary:   #5a4d42;
+  --text-muted:       #b8a090;
+  --white:            #FFFFFF;
+
+  /* Typography */
+  --font-serif:  Georgia, 'Times New Roman', serif;
+  --font-sans:   'Helvetica Neue', Arial, sans-serif;
+
+  /* Spacing */
+  --radius-card:  14px;
+  --radius-sm:    10px;
+  --radius-pill:  20px;
+  --gap-default:  16px;
+}
+
+/* ----------------------------------------------------------
+   Typography Base
+   ---------------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--text-body);
+  line-height: 1.2;
+  page-break-after: avoid;
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* ----------------------------------------------------------
+   Cover Page
+   ---------------------------------------------------------- */
+.cover-page {
+  background: linear-gradient(160deg, #A0725C 0%, #8B6350 55%, #6b4c3a 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 7.85in;
+  max-height: 7.85in;
+  overflow: hidden;
+  width: calc(100% + 34px + 1in);
+  margin-left: calc(-17px - 0.5in);
+  margin-right: calc(-17px - 0.5in);
+  margin-top: -17px;
+  margin-bottom: 0;
+  padding: 48px calc(51px + 0.5in);
+  color: var(--white);
+  page-break-after: always;
+  position: relative;
+}
+
+.cover-page .cover-eyebrow {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 20px;
+  font-family: var(--font-sans);
+}
+
+.cover-page .cover-title {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  font-weight: normal;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+
+.cover-page .cover-subtitle {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  opacity: 0.88;
+  line-height: 1.6;
+  max-width: 4in;
+  margin-bottom: 40px;
+  color: var(--white);
+}
+
+.cover-page .cover-badges {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+
+.cover-page .cover-badge {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--white);
+  font-family: var(--font-sans);
+}
+
+.cover-page .cover-macros {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-size: 13px;
+  opacity: 0.9;
+  color: var(--white);
+  font-family: var(--font-sans);
+}
+
+/* ----------------------------------------------------------
+   Print Disclaimer
+   ---------------------------------------------------------- */
+.print-disclaimer {
+  position: absolute;
+  bottom: 0.5in;
+  left: 0.5in;
+  right: 0.5in;
+  font-size: 9px;
+  text-align: center;
+  opacity: 0.55;
+  color: var(--white);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+/* ----------------------------------------------------------
+   Intro Page
+   ---------------------------------------------------------- */
+.intro-page {
+  padding: 0;
+  background: var(--bg-warm);
+}
+
+.intro-page h2 {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--text-body);
+  margin-bottom: 14px;
+  font-weight: normal;
+}
+
+.intro-page h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--terracotta);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 24px 0 8px;
+}
+
+.intro-page p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* ----------------------------------------------------------
+   Phase Divider Pages
+   ---------------------------------------------------------- */
+.phase-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 7.6in;
+  max-height: 7.6in;
+  overflow: hidden;
+  width: calc(100% + 34px + 1in);
+  margin-left: calc(-17px - 0.5in);
+  margin-right: calc(-17px - 0.5in);
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 48px calc(51px + 0.5in);
+  color: var(--white);
+  page-break-before: always;
+  page-break-after: always;
+}
+
+.phase-divider--standard {
+  background: linear-gradient(160deg, #A0725C 0%, #8B6350 60%, #6b4c3a 100%);
+}
+
+.phase-divider--luteal {
+  background: linear-gradient(160deg, #7A8B6F 0%, #5C6B52 60%, #4a5742 100%);
+}
+
+.phase-divider .phase-eyebrow {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 16px;
+  font-family: var(--font-sans);
+}
+
+.phase-divider .phase-title {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: normal;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.phase-divider .phase-description {
+  font-size: 14px;
+  opacity: 0.85;
+  line-height: 1.7;
+  max-width: 3.8in;
+  font-family: var(--font-sans);
+  color: var(--white);
+}
+
+/* ----------------------------------------------------------
+   Day Page
+   ---------------------------------------------------------- */
+.day-page {
+  page-break-before: always;
+  background: var(--bg-warm);
+  padding: 0;
+}
+
+/* ----------------------------------------------------------
+   Day Header — Terracotta (Phase 1 Standard)
+   ---------------------------------------------------------- */
+.day-header {
+  background: linear-gradient(135deg, #A0725C, #8B6350);
+  border-radius: 16px;
+  padding: 28px 24px;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.day-header .day-phase-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  opacity: 0.8;
+  font-family: var(--font-sans);
+  margin-bottom: 6px;
+}
+
+.day-header .day-number {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: normal;
+  color: var(--white);
+  margin-bottom: 18px;
+  line-height: 1.1;
+}
+
+.day-header .day-totals {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.day-header .stat-box {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 68px;
+}
+
+.day-header .stat-number {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white);
+  display: block;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.day-header .stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  color: var(--white);
+  display: block;
+}
+
+.day-header .adrenal-note {
+  font-size: 11px;
+  opacity: 0.7;
+  font-style: italic;
+  margin-top: 12px;
+  color: var(--white);
+  font-family: var(--font-sans);
+}
+
+/* ----------------------------------------------------------
+   Day Header — Luteal Variant (Phase 2)
+   ---------------------------------------------------------- */
+.day-header--luteal {
+  background: linear-gradient(135deg, #7A8B6F, #5C6B52);
+  border-left: 4px solid rgba(160, 114, 92, 0.45);
+}
+
+/* ----------------------------------------------------------
+   Meal Card
+   ---------------------------------------------------------- */
+.meal-card {
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+/* ----------------------------------------------------------
+   Meal Label
+   ---------------------------------------------------------- */
+.meal-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: var(--terracotta);
+  font-family: var(--font-sans);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.meal-label--snack {
+  color: var(--sage);
+}
+
+/* ----------------------------------------------------------
+   Meal Name
+   ---------------------------------------------------------- */
+.meal-name {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--text-body);
+  font-weight: normal;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+/* ----------------------------------------------------------
+   Macro Pills
+   ---------------------------------------------------------- */
+.macro-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.macro-pill {
+  font-size: 12px;
+  color: var(--terracotta);
+  background: var(--white);
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid #ede4d8;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+.macro-pill--snack {
+  color: var(--sage);
+}
+
+/* ----------------------------------------------------------
+   Ingredient List
+   ---------------------------------------------------------- */
+.ingredients-list {
+  list-style: none;
+  margin-bottom: 16px;
+}
+
+.ingredient {
+  padding: 8px 0;
+  border-bottom: 1px solid #ede4d8;
+  font-size: 14px;
+  color: var(--text-body);
+  font-family: var(--font-sans);
+}
+
+.ingredient:last-child {
+  border-bottom: none;
+}
+
+.ingredient-amount {
+  font-weight: bold;
+  color: var(--text-body);
+}
+
+.ingredient-macros {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+/* ----------------------------------------------------------
+   Instructions Box
+   ---------------------------------------------------------- */
+.instructions-box {
+  padding: 16px 0;
+  margin-top: 14px;
+}
+
+.section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--sage);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+  font-family: var(--font-sans);
+  page-break-after: avoid;
+}
+
+.instructions-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-family: var(--font-sans);
+}
+
+/* ----------------------------------------------------------
+   Grocery List
+   ---------------------------------------------------------- */
+.grocery-week {
+  background: linear-gradient(135deg, #A0725C, #8B6350);
+  border-radius: 16px;
+  padding: 22px 24px;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.grocery-week h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: normal;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.grocery-week .grocery-week-subtitle {
+  font-size: 12px;
+  opacity: 0.75;
+  letter-spacing: 1px;
+  font-family: var(--font-sans);
+}
+
+.grocery-category {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--sage);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  margin: 18px 0 10px;
+  padding-top: 17px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  display: block;
+}
+
+.grocery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px;
+  margin-bottom: 8px;
+}
+
+.grocery-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  padding: 4px 0;
+  line-height: 1.4;
+}
+
+.grocery-item::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  margin-top: 1px;
+  background: var(--white);
+}
+
+/* ----------------------------------------------------------
+   Utility
+   ---------------------------------------------------------- */
+.page-break {
+  page-break-before: always;
+}
+
+.no-break {
+  page-break-inside: avoid;
+}
